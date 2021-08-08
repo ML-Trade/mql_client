@@ -19,7 +19,7 @@ if ($FileToCompile.Contains(" ")) {
 Get-Process -Name terminal64 -ErrorAction SilentlyContinue | Where-Object {$_.Id -gt 0} | Stop-Process
 
 #fires up the Metaeditor compiler...
-& "C:\Program Files (x86)\FPMarkets MT4 Terminal\metaeditor64.exe" /compile:"$FileToCompile" /log:"$LogFile" /inc:"C:\Users\Kyle\AppData\Roaming\MetaQuotes\Terminal\B8925BF731C22E88F33C7A8D7CD3190E\MQL4" | Out-Null
+& "C:\Program Files (x86)\FPMarkets MT4 Terminal\metaeditor.exe" /compile:"$FileToCompile" /log:"$LogFile" /inc:"C:\Users\Kyle\AppData\Roaming\MetaQuotes\Terminal\B8925BF731C22E88F33C7A8D7CD3190E\MQL4" | Out-Null
 
 #get some clean real state and tells the user what is being compiled (just the file name, no path)...
 "";"";"";"";""
