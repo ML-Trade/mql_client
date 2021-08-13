@@ -1,9 +1,10 @@
 #include "Connection.mqh"
 
 void Connection::Connection(ConnectionType connectionType, int port)
-    : numMessages(0), connectionType(connectionType), socket() {
-    // Connection::controllerSocket = Socket();
-    // Init ZMQ Socket
+    : numMessages(0),
+      connectionType(connectionType),
+      globals(Globals::getInstance()),
+      socket(globals.context, connectionType) {
 }
 
 void Connection::send(CJAVal& message) {

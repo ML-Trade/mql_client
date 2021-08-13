@@ -31,7 +31,8 @@ MQL server that executes trades, and feeds data to the python client
 
 The `global_config.json` file includes variables that are shared between the Python and MQL client
 It is accessed via a web request to [this gist](https://gist.github.com/bigboiblue/cb668007714195333fd9a0c79a6946ee)
-This gist automatically updates using github actions on pushes / merges with the master branch
+This gist automatically updates using github actions on pushes / merges with the master branch.
+Note that this may take a few minutes to update each time
 
 ## Included variables:
 

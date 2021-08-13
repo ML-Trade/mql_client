@@ -1,3 +1,4 @@
+#include "./Globals.mqh"
 #include "./Include/JAson.mqh"
 #include "./Include/Zmq/Zmq.mqh"
 
@@ -34,6 +35,7 @@ class Connection {
     void init();
 
    private:
+    Globals* globals;
     int numMessages;
     int port;
     ConnectionType connectionType;

@@ -2,13 +2,22 @@
 
 #include "./utils.mq4"
 #include "Connection.mqh"
+#include "Globals.mqh"
 #include "Include/JAson.mqh"
 #include "Include/Zmq/Zmq.mqh"
 
 const string GIST_URL = "https://gist.githubusercontent.com/bigboiblue/cb668007714195333fd9a0c79a6946ee/raw/global_config.json";
 
-Context context;
 int OnInit() {
+    if (setupGlobals() == -1) return -1;
+
+    return 0;
+}
+
+int setupGlobals() {
+    Globals *globals = Globals::getInstance();
+
+    // Send request to get global_config.json from gist
     char reqBody[], response[];
     string headers;
 
@@ -20,17 +29,18 @@ int OnInit() {
 
     string configString = CharArrayToString(response);
     CJAVal config = CJAVal();
-    Print(configString);
     config.Deserialize(configString);
 
-    Print("PUBLISHER_PORT: " + config["PUBLISHER_PORT"].ToStr());
-    Print("API_PORT: " + config["API_PORT"].ToStr());
+    globals.PUBLISHER_PORT = config["PUBLISHER_PORT"].ToInt();
+    globals.API_PORT = config["API_PORT"].ToInt();
 
-    return (INIT_SUCCEEDED);
+    return 0;
 }
 
 void sendData();
-void OnDeinit(const int reason) {}
+void OnDeinit(const int reason) {
+    Globals::releaseInstance();
+}
 void handleSocketConnections();
 void OnTick() {}
 void OnTimer() {}
