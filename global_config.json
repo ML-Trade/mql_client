@@ -1,6 +1,7 @@
 {
     "__comment": "This file includes variables that are shared between the Python and MQL client",
-    "__comment": "It is accessed via a web request to this file on master branch",
+    "__comment": "It is accessed via a web request to this gist.",
+    "__comment": "This only updates on push to master branch",
     "": "",
     "": "",
     "__comment": "The publisher port is used to publish the chart data to from the MQL client to the Python client",
