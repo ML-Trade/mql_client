@@ -21,7 +21,7 @@ enum ConnectionType {
 
 class Connection {
    public:
-    Connection(ConnectionType connectionType);
+    Connection(ConnectionType connectionType, int port);
 
     void send(CJAVal& message);
     CJAVal receive();
@@ -29,13 +29,16 @@ class Connection {
     void receiveAll(CJAVal& messages[]);
 
     int getNumMessages();
+    int getPort();
     ConnectionType getConnectionType();
     void init();
 
    private:
     int numMessages;
+    int port;
     ConnectionType connectionType;
     Socket socket;
 };
 
+#include "Connection.mq4"
 #endif
