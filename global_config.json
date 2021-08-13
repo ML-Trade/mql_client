@@ -1,11 +1,11 @@
 {
     "__comment": "This file includes variables that are shared between the Python and MQL client",
-    "__comment": "It is accessed via a web request to this gist.",
-    "__comment": "This only updates on push to master branch",
-    "": "",
-    "": "",
-    "__comment": "The publisher port is used to publish the chart data to from the MQL client to the Python client",
+    "__comment1": "It is accessed via a web request to this gist.",
+    "__comment2": "This only updates on push to master branch",
+    "a1": "",
+    "a2": "",
+    "__commen3t": "The publisher port is used to publish the chart data to from the MQL client to the Python client",
     "PUBLISHER_PORT": 25000,
-    "__comment": "The API port is used by the MQL client to receive (json) requests on that port, and respond to them (in json)",
+    "__commen34t": "The API port is used by the MQL client to receive (json) requests on that port, and respond to them (in json)",
     "API_PORT": 25001
 }
