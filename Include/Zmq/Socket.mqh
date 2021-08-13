@@ -20,6 +20,9 @@
 //+------------------------------------------------------------------+
 #property strict
 
+#ifndef SOCKET_MQH
+#define SOCKET_MQH
+
 #include "../Mql/Lang/Mql.mqh"
 #include "../Mql/Lang/Native.mqh"
 #include "Context.mqh"
@@ -279,3 +282,5 @@ void Socket::fillPollItem(PollItem &item, short events) {
     item.revents = 0;
 }
 //+------------------------------------------------------------------+
+
+#endif

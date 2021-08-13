@@ -9,3 +9,19 @@ MQL server that executes trades, and feeds data to the python client
 ## Compilation
 
 - To compile, run the "Compile-MQL" task in the vscode tasks
+
+# API
+
+## Requests:
+
+```
+{
+    action: string
+
+}
+```
+
+### action types:
+ - "REQUEST CONNECTION" <-- Request connection
+
+### Responses:

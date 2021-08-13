@@ -20,6 +20,9 @@
 //+------------------------------------------------------------------+
 #property strict
 
+#ifndef ATOMIC_COUNTER_MQH
+#define ATOMIC_COUNTER_MQH
+
 #include "../Mql/Lang/Native.mqh"
 #import "libzmq.dll"
 intptr_t zmq_atomic_counter_new(void);
@@ -46,3 +49,5 @@ class AtomicCounter {
     void set(int value) { zmq_atomic_counter_set(m_ref, value); }
 };
 //+------------------------------------------------------------------+
+
+#endif

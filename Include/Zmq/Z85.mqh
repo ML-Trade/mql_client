@@ -20,6 +20,9 @@
 //+------------------------------------------------------------------+
 #property strict
 
+#ifndef Z85_MQH
+#define Z85_MQH
+
 #include "../Mql/Lang/Native.mqh"
 #import "libzmq.dll"
 // Encode data with Z85 encoding. Returns 0(NULL) if failed
@@ -140,3 +143,5 @@ string Z85::derivePublic(const string secrect) {
     return pubstr;
 }
 //+------------------------------------------------------------------+
+
+#endif  // !Z85_MQH

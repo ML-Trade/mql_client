@@ -20,6 +20,9 @@
 //+------------------------------------------------------------------+
 #property strict
 
+#ifndef SOCKET_OPTIONS_MQH
+#define SOCKET_OPTIONS_MQH
+
 #include "../Mql/Lang/Native.mqh"
 #import "libzmq.dll"
 // We can overload the same function for different data types
@@ -371,3 +374,5 @@ bool SocketOptions::setStringOption(int option, const string value, bool ending)
     return res;
 }
 //+------------------------------------------------------------------+
+
+#endif

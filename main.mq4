@@ -3,6 +3,7 @@
 #include <stdlib.mqh>
 
 #include "./utils.mq4"
+#include "Connection.mq4"
 #include "Include/JAson.mqh"
 #include "Include/Zmq/Zmq.mqh"
 
@@ -17,6 +18,15 @@ int OnInit() {
     main_socket.bind("tcp://*:" + (string)main_port);
     pub_socket.bind("tcp://*:" + (string)pub_port);
     EventSetMillisecondTimer(1);
+
+    Print("Setting env variable PUBLISHER_PORT to 25000");
+    wchar_t lpName[100], lpPort[100];
+    StringToShortArray("PUBLISHER_PORT", lpName);
+    StringToShortArray("500", lpPort);
+    SetEnvironmentVariable(lpName, lpPort);
+    char publisherPort[100];
+    GetEnvironmentVariable(lpName, publisherPort, ArraySize(publisherPort));
+    Print("The PUBLISHER_PORT is " + CharArrayToString(publisherPort));
     return (INIT_SUCCEEDED);
 }
 

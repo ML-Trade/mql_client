@@ -19,6 +19,10 @@
 //| and limitations under the License.                               |
 //+------------------------------------------------------------------+
 #property strict
+
+#ifndef CONTEXT_MQH
+#define CONTEXT_MQH
+
 #include "../Mql/Lang/GlobalVariable.mqh"
 #include "../Mql/Lang/Mql.mqh"
 #include "../Mql/Lang/Native.mqh"
@@ -135,3 +139,5 @@ class Context : public GlobalHandle<intptr_t, ContextHanldeManager> {
     }
 };
 //+------------------------------------------------------------------+
+
+#endif

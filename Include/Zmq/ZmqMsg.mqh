@@ -18,6 +18,10 @@
 //| See the License for the specific language governing permissions  |
 //| and limitations under the License.                               |
 //+------------------------------------------------------------------+
+
+#ifndef ZMQ_MSG_MQH
+#define ZMQ_MSG_MQH
+
 #property strict
 #include "../Mql/Lang/Mql.mqh"
 #include "../Mql/Lang/Native.mqh"
@@ -158,3 +162,5 @@ string ZmqMsg::meta(const string property) {
     return StringFromUtf8Pointer(ref);
 }
 //+------------------------------------------------------------------+
+
+#endif
