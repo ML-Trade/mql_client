@@ -16,7 +16,7 @@ if ($FileToCompile.Contains(" ")) {
 }
 
 #first of all, kill MT Terminal (if running)... otherwise it will not see the new compiled version of the code...
-Get-Process -Name terminal64 -ErrorAction SilentlyContinue | Where-Object { $_.Id -gt 0 } | Stop-Process
+# Get-Process -Name terminal64 -ErrorAction SilentlyContinue | Where-Object { $_.Id -gt 0 } | Stop-Process
 
 #fires up the Metaeditor compiler...
 & "C:\Program Files (x86)\FPMarkets MT4 Terminal\metaeditor.exe" /compile:"$FileToCompile" /log:"$LogFile" /inc:"C:\Users\Kyle\AppData\Roaming\MetaQuotes\Terminal\B8925BF731C22E88F33C7A8D7CD3190E\MQL4" | Out-Null
@@ -30,9 +30,8 @@ Write-Host "Compiling........: $JustTheFileName"
 #reads the log file. Eliminates the blank lines. Skip the first line because it is useless.
 $Log = Get-Content -Path $LogFile | Where-Object { $_ -ne "" } | Select-Object -Skip 1
 
-#Green color for successful Compilation. Otherwise (error/warning), Red!
-$WhichColor = "Red"
-$Log | ForEach-Object { if ($_.Contains("0 error(s), 0 warning(s)")) { $WhichColor = "Green" } }
+$SuccessfulCompilation = 0
+$Log | ForEach-Object {  }
 
 #runs through all the log lines...
 $Log | ForEach-Object {
@@ -48,8 +47,13 @@ $Log | ForEach-Object {
         else {
             Write-Host $_ -ForegroundColor "white"
         }
+
+        if ($_.Contains("Result: 0 error")) { $SuccessfulCompilation = 1 }
     }
 }
 
 #get the MT Terminal back if all went well...
-if ( $WhichColor -eq "Green") { & "C:\Program Files (x86)\FPMarkets MT4 Terminal\terminal64.exe" }
+# if ( $SuccessfulCompilation -eq 1) { & "C:\Program Files (x86)\FPMarkets MT4 Terminal\terminal.exe" }
+
+# Remove the logfile
+Remove-Item $LogFile
