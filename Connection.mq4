@@ -1,6 +1,6 @@
 #include "Connection.mqh"
 
-void Connection::Connection(ConnectionType connectionType, int port)
+Connection::Connection(ConnectionType connectionType, int port)
     : numMessages(0),
       connectionType(connectionType),
       globals(Globals::getInstance()),

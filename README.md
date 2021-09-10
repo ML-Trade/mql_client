@@ -16,15 +16,28 @@ MQL server that executes trades, and feeds data to the python client
 
 ```
 {
-    action: string
+    action: int
 
 }
 ```
 
 ### action types:
- - "REQUEST CONNECTION" <-- Request connection
+ - 1 <-- Request connection
 
 ### Responses:
+
+
+## Publisher Format
+
+The publisher, which sends the ohlc data to the python client, sends data in the following JSON format
+
+```
+{
+    symbol: string
+    
+
+}
+```
 
 
 # Global Config

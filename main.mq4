@@ -10,6 +10,8 @@ const string GIST_URL = "https://gist.githubusercontent.com/bigboiblue/cb6680077
 const string SYMBOL = Symbol();  // Just use current symbol for now
 const int PERIOD = PERIOD_M1;    // Using 1m period for now
 
+void sendData();
+
 int OnInit() {
     if (setupGlobals() == -1) return -1;
     EventSetMillisecondTimer(1);
@@ -37,6 +39,8 @@ int setupGlobals() {
     globals.PUBLISHER_PORT = config["PUBLISHER_PORT"].ToInt();
     globals.API_PORT = config["API_PORT"].ToInt();
 
+    EventSetMillisecondTimer(1);
+
     return 0;
 }
 
@@ -49,12 +53,18 @@ void handleSocketConnections();
  * We can only get new data on a new tick, therefore we send new data on tick
  */
 void OnTick() {
+    // TODO: this is the correct location for sendData, but on weekends there is no data to test with, so we must use ontick
+    // sendData();
+}
+
+void sendData() {
     static datetime lastBarTime = datetime();
     bool isNewBar = lastBarTime != iTime(SYMBOL, PERIOD, 0);
     if (isNewBar) {
         lastBarTime = iTime(SYMBOL, PERIOD, 0);
 
-        CJAVal ohlc = CJAVal();
+        CJAVal ohlc;
+        ohlc["symbol"] = SYMBOL;
         ohlc["time"] = TimeToString(iTime(SYMBOL, PERIOD, 1));
         ohlc["open"] = iOpen(SYMBOL, PERIOD, 1);
         ohlc["high"] = iHigh(SYMBOL, PERIOD, 1);
@@ -65,7 +75,9 @@ void OnTick() {
         PrintFormat("Time: %s - Open: %.2f - High: %.2f - Low: %.2f - Close: %.2f - Volume: %i", ohlc["time"].ToStr(), ohlc["open"].ToDbl(), ohlc["high"].ToDbl(), ohlc["low"].ToDbl(), ohlc["close"].ToDbl(), ohlc["volume"].ToInt());
 
         // TODO: Send ohlc over connection
-        // Connection publisher = Connection(ConnectionType::PUB, Globals::getInstance().PUBLISHER_PORT);
+        ConnectionType connectionType = ConnectionType::PUB;
+        Connection publisher(connectionType, Globals::getInstance().PUBLISHER_PORT);
+        publisher.send(ohlc);
     }
 }
 
@@ -73,4 +85,5 @@ void OnTick() {
  * Since we want to respond fast, we check for messages every millisecond using a timer
 */
 void OnTimer() {
+    sendData();
 }
