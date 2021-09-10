@@ -1,0 +1,8 @@
+# Binaries
+*.ex4
+
+# Logs
+*.log
+
+# Other
+.DS_Store
