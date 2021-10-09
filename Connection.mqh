@@ -25,7 +25,7 @@ class Connection {
     Connection(ConnectionType connectionType, int port);
 
     void send(CJAVal& message);
-    CJAVal receive();
+    CJAVal* receive(bool noWait = true);
     /** Fills the passed CJAVal array with all the messages */
     void receiveAll(CJAVal& messages[]);
 

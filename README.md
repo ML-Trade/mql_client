@@ -16,14 +16,26 @@ MQL server that executes trades, and feeds data to the python client
 
 ```
 {
-    action: int
-
+    action: int,
+    options: {
+        ...
+    }
 }
 ```
 
 ### action types:
- - 1 <-- Request connection
+ - 1 <-- Request connection - Options: `none`
+ - 2 <-- Trade Request - Options: 
+ ```
+ {
+     action: "OPEN" | "CLOSE"
+     type: "LIMIT", "MARKET", "STOP",
+     price: float,     
+ }
+ ```
+ - 3 <-- Healthcheck - Options: `none`
 
+ In the case of a trade request there are 
 ### Responses:
 
 
@@ -33,11 +45,17 @@ The publisher, which sends the ohlc data to the python client, sends data in the
 
 ```
 {
-    symbol: string
-    
-
+    symbol: string,
+    time: int,
+    open: float,
+    high: float,
+    low: float,
+    close: float,
+    volume: int,
 }
 ```
+
+When the MQL Client receives no data from the Python Client (due to no wait), an empty JSON message is generated
 
 
 # Global Config
