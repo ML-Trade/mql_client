@@ -41,7 +41,7 @@ void Connection::send(CJAVal &message)
     socket.send(msg, noWait);
 }
 
-CJAVal* Connection::receive(bool noWait = true)
+CJAVal Connection::receive(bool noWait = true)
 {
     ZmqMsg msg;
     bool isSuccess = socket.recv(msg, noWait);
@@ -49,7 +49,7 @@ CJAVal* Connection::receive(bool noWait = true)
     if (isSuccess) {
         ret.Deserialize(msg.getData());
     }
-    return &ret;
+    return ret;
 }
 
 void Connection::receiveAll(CJAVal &messages[])

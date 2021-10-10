@@ -16,7 +16,7 @@ MQL server that executes trades, and feeds data to the python client
 
 ```
 {
-    action: int,
+    action: "CONNECT" | "TRADE" | "HEALTHCHECK",
     options: {
         ...
     }
@@ -24,8 +24,8 @@ MQL server that executes trades, and feeds data to the python client
 ```
 
 ### action types:
- - 1 <-- Request connection - Options: `none`
- - 2 <-- Trade Request - Options: 
+ - CONNECT <-- Request connection - Options: `none`
+ - TRADE <-- Trade Request - Options: 
  ```
  {
      action: "BUY" | "SELL" | "CLOSE"
@@ -37,7 +37,7 @@ MQL server that executes trades, and feeds data to the python client
      amount?: float     
  }
  ```
- - 3 <-- Healthcheck - Options: `none`
+ - HEALTHCHECK <-- Healthcheck - Options: `none`
 
  In the case of a trade request there are 
 ### Responses:

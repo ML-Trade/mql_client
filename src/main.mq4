@@ -68,7 +68,7 @@ void handleSocketConnections();
  */
 void OnTick() {
     sendData();
-    executeRecommendations();
+    // executeRecommendations();
 }
 
 void sendData() {
@@ -119,7 +119,7 @@ static string TradeTypes::STOP = "STOP";
 void executeRecommendations() {
     bool noWait = true;
     CJAVal msg = api.receive(noWait);
-    bool messageExists = msg.HasKey("action").ToBool();
+    bool messageExists = msg["action"].ToBool();
     if (messageExists && msg["action"].ToStr() == Actions::TRADE) {
         CJAVal options = msg["options"];
         string action = options["action"].ToStr();
@@ -129,12 +129,12 @@ void executeRecommendations() {
             double amount = 0.0;
             OrderSelect(ticketId, SELECT_BY_TICKET);
 
-            if (options.HasKey("amount").ToBool()) amount = options["amount"].ToDbl();
+            if (options["amount"].ToBool()) amount = options["amount"].ToDbl();
             else amount = OrderLots();
             int orderType = OrderType();
             bool wasBuyOrder = orderType == OP_BUY || orderType == OP_BUYLIMIT || orderType == OP_BUYSTOP;
             int mode = (wasBuyOrder ? MODE_BID : MODE_ASK);
-            double price = MarketInfo(OrderSymbol(), mode);
+            double price = MarketInfo(SYMBOL, mode);
             int slippage = (int)MathRound((price / Point) * maxCloseSlippage);
             bool shouldTryTrade = true;
             while (shouldTryTrade) {
@@ -153,6 +153,9 @@ void executeRecommendations() {
             int operation = getOperationNumber(action, type);
             int slippage = (int)MathRound((price / Point) * maxOpenSlippage); 
             
+            int mode = (action == TradeActions::BUY ? MODE_BID : MODE_ASK);
+            if (type == TradeTypes::MARKET) price = MarketInfo(SYMBOL, mode);
+
             bool shouldTryTrade = true;
             while (shouldTryTrade) {
                 int ticketId = OrderSend(SYMBOL, operation, amount, price, slippage, stop, takeProfit);
