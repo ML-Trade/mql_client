@@ -1,4 +1,3 @@
-#include "./Globals.mqh"
 #include "./Include/JAson.mqh"
 #include "./Include/Zmq/Zmq.mqh"
 
@@ -22,24 +21,25 @@ enum ConnectionType {
 
 class Connection {
    public:
-    Connection(ConnectionType connectionType, int port);
+    Connection(Context &context, ConnectionType connectionType, int port);
 
     void send(CJAVal& message);
     CJAVal* receive(bool noWait = true);
     /** Fills the passed CJAVal array with all the messages */
     void receiveAll(CJAVal& messages[]);
 
-    int getNumMessages();
     int getPort();
     ConnectionType getConnectionType();
     void init();
+    ~Connection();
 
    private:
-    Globals* globals;
-    int numMessages;
+    Context *context;
     int port;
     ConnectionType connectionType;
     Socket socket;
+    string address;
+
 };
 
 #include "Connection.mq4"

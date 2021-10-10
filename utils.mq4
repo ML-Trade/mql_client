@@ -43,3 +43,15 @@ void ArrayPrint(T &array[]) {
     }
     Print(x);
 }
+
+template <typename T>
+bool IsInArray(T &array[], T item) {
+    int len = ArraySize(array);
+    bool found = false;
+    for (int i = 0; i < len; i++) {
+        if (array[i] == item) {
+            found = true;
+        }
+    }
+    return found;
+}

@@ -1,20 +1,44 @@
-#include "Connection.mqh"
+#include "./Connection.mqh"
+#include "./utils.mq4"
 
-Connection::Connection(ConnectionType connectionType, int port)
-    : numMessages(0),
-      connectionType(connectionType),
-      globals(Globals::getInstance()),
-      socket(globals.context, connectionType)
+int supportedTypes[] = {
+    ConnectionType::PUB, ConnectionType::SUB,
+    ConnectionType::REP, ConnectionType::REQ
+};
+
+int serverConnectionTypes[] = {
+    ConnectionType::PUB,
+    ConnectionType::REP,
+};
+
+Connection::Connection(Context &context, ConnectionType connectionType, int port)
+    : connectionType(connectionType),
+      context(&context),
+      socket(context, connectionType),
+      port(port)
 {
-    socket.bind("tcp://*:" + port);
+    if (!IsInArray(supportedTypes, (int)connectionType)) {
+        Print("ERROR::Only PUB, SUB, REP, and REQ are supported connection types as of now, not type: " + connectionType);
+        ExpertRemove();
+    }
+
+    if (IsInArray(serverConnectionTypes, (int)connectionType)) {
+        address = "tcp://*:" + port;
+        socket.bind(address);
+        Print(StringFormat("%i bound to %s", connectionType, address));
+    } else {
+        address = "tcp://localhost:" + port;
+        socket.connect(address);
+        Print(StringFormat("%i connected to %s", connectionType, address));
+    }    
 }
 
 void Connection::send(CJAVal &message)
 {
     bool noWait = true; // If no other ports connected, don't wait
     string msgString = message.Serialize();
-    Print("Sending " + msgString);
-    socket.send(ZmqMsg(msgString), noWait);
+    ZmqMsg msg(msgString);
+    socket.send(msg, noWait);
 }
 
 CJAVal* Connection::receive(bool noWait = true)
@@ -30,11 +54,7 @@ CJAVal* Connection::receive(bool noWait = true)
 
 void Connection::receiveAll(CJAVal &messages[])
 {
-}
-
-int Connection::getNumMessages()
-{
-    return numMessages;
+    Print("NOT YET IMPLEMENTED");
 }
 
 int Connection::getPort()
@@ -45,4 +65,9 @@ int Connection::getPort()
 ConnectionType Connection::getConnectionType()
 {
     return connectionType;
+}
+
+Connection::~Connection() {
+    socket.disconnect(address);
+    socket.unbind(address);
 }
