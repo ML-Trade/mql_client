@@ -28,9 +28,13 @@ MQL server that executes trades, and feeds data to the python client
  - 2 <-- Trade Request - Options: 
  ```
  {
-     action: "OPEN" | "CLOSE"
+     action: "BUY" | "SELL" | "CLOSE"
      type: "LIMIT", "MARKET", "STOP",
-     price: float,     
+     price?: float,
+     stop?: float, 
+     take_profit?: float,
+     ticket_id?: int,
+     amount?: float     
  }
  ```
  - 3 <-- Healthcheck - Options: `none`

@@ -9,6 +9,8 @@
 const string GIST_URL = "https://gist.githubusercontent.com/bigboiblue/cb668007714195333fd9a0c79a6946ee/raw/global_config.json";
 const string SYMBOL = Symbol();  // Just use current symbol for now
 const int PERIOD = PERIOD_M1;    // Using 1m period for now
+double maxCloseSlippage = 0.01; // 1%
+double maxOpenSlippage = 0.001; // 0.1%
 Context *context;
 Connection *publisher;
 Connection *api;
@@ -91,9 +93,89 @@ void sendData() {
     }
 }
 
+struct Actions {
+    static string CONNECT, TRADE, HEALTHCHECK;
+};
+static string Actions::CONNECT = "CONNECT";
+static string Actions::TRADE = "TRADE";
+static string Actions::HEALTHCHECK = "HEALTHCHECK";
+
+struct TradeActions {
+    static string BUY, SELL, CLOSE;
+};
+static string TradeActions::BUY = "BUY";
+static string TradeActions::SELL = "SELL";
+static string TradeActions::CLOSE = "CLOSE";
+
+struct TradeTypes {
+    static string LIMIT, MARKET, STOP;
+};
+static string TradeTypes::LIMIT = "LIMIT";
+static string TradeTypes::MARKET = "MARKET";
+static string TradeTypes::STOP = "STOP";
+
+
 /** Check for recommendations from the model over the zmq api connection **/
 void executeRecommendations() {
-    
+    bool noWait = true;
+    CJAVal msg = api.receive(noWait);
+    bool messageExists = msg.HasKey("action").ToBool();
+    if (messageExists && msg["action"].ToStr() == Actions::TRADE) {
+        CJAVal options = msg["options"];
+        string action = options["action"].ToStr();
+
+        if (action == TradeActions::CLOSE) {
+            int ticketId = options["ticket_id"].ToInt();
+            double amount = 0.0;
+            OrderSelect(ticketId, SELECT_BY_TICKET);
+
+            if (options.HasKey("amount").ToBool()) amount = options["amount"].ToDbl();
+            else amount = OrderLots();
+            int orderType = OrderType();
+            bool wasBuyOrder = orderType == OP_BUY || orderType == OP_BUYLIMIT || orderType == OP_BUYSTOP;
+            int mode = (wasBuyOrder ? MODE_BID : MODE_ASK);
+            double price = MarketInfo(OrderSymbol(), mode);
+            int slippage = (int)MathRound((price / Point) * maxCloseSlippage);
+            bool shouldTryTrade = true;
+            while (shouldTryTrade) {
+                OrderClose(ticketId, amount, price, slippage);
+                if (ticketId == -1) shouldTryTrade = true;
+                else shouldTryTrade = false;
+            }
+        } else { // We are opening a trade
+            string type = options["type"].ToStr();
+            double price = options["price"].ToDbl();
+            double amount = options["amount"].ToDbl();
+            // For no stop or take profit, these values should be 0
+            double stop = options["stop"].ToDbl();
+            double takeProfit = options["take_profit"].ToDbl(); 
+
+            int operation = getOperationNumber(action, type);
+            int slippage = (int)MathRound((price / Point) * maxOpenSlippage); 
+            
+            bool shouldTryTrade = true;
+            while (shouldTryTrade) {
+                int ticketId = OrderSend(SYMBOL, operation, amount, price, slippage, stop, takeProfit);
+                if (ticketId == -1) shouldTryTrade = true;
+                else shouldTryTrade = false;
+            }
+        }
+
+        
+    }
+}
+
+int getOperationNumber(string action, string type) {
+    if (action == TradeActions::BUY) {
+        if (type == TradeTypes::LIMIT) return OP_BUYLIMIT;
+        if (type == TradeTypes::MARKET) return OP_BUY;
+        if (type == TradeTypes::STOP) return OP_BUYSTOP;
+    } else if (action == TradeActions::SELL) {
+        if (type == TradeTypes::LIMIT) return OP_SELLLIMIT;
+        if (type == TradeTypes::MARKET) return OP_SELL;
+        if (type == TradeTypes::STOP) return OP_SELLSTOP;
+    }
+    return -1;
 }
 
 /** 
