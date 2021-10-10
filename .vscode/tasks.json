@@ -6,7 +6,7 @@
         {
             "label": "Compile-MQL",
             "type": "shell",
-            "command": "${workspaceFolder}\\Compiler.ps1 ${workspaceFolder}\\main.mq4",
+            "command": "${workspaceFolder}\\Compiler.ps1 ${workspaceFolder}\\src\\main.mq4",
             "presentation": {
                 "echo": true,
                 "reveal": "always",

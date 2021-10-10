@@ -2,8 +2,8 @@
 
 #include "./utils.mq4"
 #include "./Connection.mqh"
-#include "./Include/JAson.mqh"
-#include "./Include/Zmq/Zmq.mqh"
+#include "../Include/JAson.mqh"
+#include "../Include/Zmq/Zmq.mqh"
 
 /** GLOBALS **/
 const string GIST_URL = "https://gist.githubusercontent.com/bigboiblue/cb668007714195333fd9a0c79a6946ee/raw/global_config.json";

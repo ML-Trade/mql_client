@@ -1,5 +1,5 @@
-#include "./Include/JAson.mqh"
-#include "./Include/Zmq/Zmq.mqh"
+#include "../Include/JAson.mqh"
+#include "../Include/Zmq/Zmq.mqh"
 
 #ifndef CONNECTION_MQH
 #define CONNECTION_MQH
