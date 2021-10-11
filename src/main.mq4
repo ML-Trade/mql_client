@@ -68,7 +68,7 @@ void handleSocketConnections();
  */
 void OnTick() {
     sendData();
-    // executeRecommendations();
+    executeRecommendations();
 }
 
 void sendData() {
@@ -117,10 +117,14 @@ static string TradeTypes::STOP = "STOP";
 
 /** Check for recommendations from the model over the zmq api connection **/
 void executeRecommendations() {
+    CJAVal response;
+    
     bool noWait = true;
     CJAVal msg = api.receive(noWait);
     bool messageExists = msg["action"].ToBool();
     if (messageExists && msg["action"].ToStr() == Actions::TRADE) {
+        PrintFormat("Recieved a message: %s", msg.Serialize());
+        response["type"] = "TRADE";
         CJAVal options = msg["options"];
         string action = options["action"].ToStr();
 
@@ -135,7 +139,7 @@ void executeRecommendations() {
             bool wasBuyOrder = orderType == OP_BUY || orderType == OP_BUYLIMIT || orderType == OP_BUYSTOP;
             int mode = (wasBuyOrder ? MODE_BID : MODE_ASK);
             double price = MarketInfo(SYMBOL, mode);
-            int slippage = (int)MathRound((price / Point) * maxCloseSlippage);
+            int slippage = (int)MathRound((price / MarketInfo(SYMBOL, MODE_POINT)) * maxCloseSlippage);
             bool shouldTryTrade = true;
             while (shouldTryTrade) {
                 OrderClose(ticketId, amount, price, slippage);
@@ -150,22 +154,24 @@ void executeRecommendations() {
             double stop = options["stop"].ToDbl();
             double takeProfit = options["take_profit"].ToDbl(); 
 
-            int operation = getOperationNumber(action, type);
-            int slippage = (int)MathRound((price / Point) * maxOpenSlippage); 
             
+            int operation = getOperationNumber(action, type);
             int mode = (action == TradeActions::BUY ? MODE_BID : MODE_ASK);
+            
             if (type == TradeTypes::MARKET) price = MarketInfo(SYMBOL, mode);
+            int slippage = (price / MarketInfo(SYMBOL, MODE_POINT)) * maxOpenSlippage; 
 
             bool shouldTryTrade = true;
             while (shouldTryTrade) {
                 int ticketId = OrderSend(SYMBOL, operation, amount, price, slippage, stop, takeProfit);
-                if (ticketId == -1) shouldTryTrade = true;
+                response["ticket_id"] = ticketId;
+                if (ticketId == -1) shouldTryTrade = false;
                 else shouldTryTrade = false;
             }
         }
 
-        
     }
+    if (messageExists) api.send(response);
 }
 
 int getOperationNumber(string action, string type) {

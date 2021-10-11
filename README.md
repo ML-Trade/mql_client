@@ -42,6 +42,13 @@ MQL server that executes trades, and feeds data to the python client
  In the case of a trade request there are 
 ### Responses:
 
+```
+{
+    type: "TRADE",
+    ticket_id: int,
+    error_message?: string,
+}
+```
 
 ## Publisher Format
 
