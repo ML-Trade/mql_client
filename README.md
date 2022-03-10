@@ -57,12 +57,13 @@ The publisher, which sends the ohlc data to the python client, sends data in the
 ```
 {
     symbol: string,
-    time: int,
-    open: float,
-    high: float,
-    low: float,
-    close: float,
-    volume: int,
+    pip_size: float,
+    t: int,
+    o: float,
+    h: float,
+    l: float,
+    c: float,
+    v: int,
 }
 ```
 

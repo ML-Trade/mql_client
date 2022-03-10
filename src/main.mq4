@@ -79,12 +79,13 @@ void sendData() {
 
         CJAVal ohlc;
         ohlc["symbol"] = SYMBOL;
-        ohlc["time"] = TimeToString(iTime(SYMBOL, PERIOD, 1));
-        ohlc["open"] = iOpen(SYMBOL, PERIOD, 1);
-        ohlc["high"] = iHigh(SYMBOL, PERIOD, 1);
-        ohlc["low"] = iLow(SYMBOL, PERIOD, 1);
-        ohlc["close"] = iClose(SYMBOL, PERIOD, 1);
-        ohlc["volume"] = iVolume(SYMBOL, PERIOD, 1);
+        ohlc["pip_size"] = MarketInfo(SYMBOL, MODE_TICKSIZE);
+        ohlc["t"] = (double)iTime(SYMBOL, PERIOD, 1);
+        ohlc["o"] = iOpen(SYMBOL, PERIOD, 1);
+        ohlc["h"] = iHigh(SYMBOL, PERIOD, 1);
+        ohlc["l"] = iLow(SYMBOL, PERIOD, 1);
+        ohlc["c"] = iClose(SYMBOL, PERIOD, 1);
+        ohlc["v"] = iVolume(SYMBOL, PERIOD, 1);
 
 
         publisher.send(ohlc);
